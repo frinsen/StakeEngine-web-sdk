@@ -9,12 +9,12 @@ export function recordBookEvent<TBookEvent extends BaseBookEvent>({
 }: {
 	bookEvent: TBookEvent;
 }) {
-	try {
-		if (PUBLIC_CHROMATIC) {
-			console.log('storybook mock request end-event:', bookEvent.index, bookEvent.type);
-			return;
-		}
+	if (PUBLIC_CHROMATIC || stateUrlDerived.replay()) {
+		console.log('mock request end-event:', { index: bookEvent.index, type: bookEvent.type });
+		return;
+	}
 
+	try {
 		requestEndEvent({
 			eventIndex: bookEvent.index,
 			rgsUrl: stateUrlDerived.rgsUrl(),

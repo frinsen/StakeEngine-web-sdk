@@ -96,3 +96,18 @@ export const requestBet = async (options: {
 
 	return data;
 };
+
+export const requestReplay = async (options: {
+	game: string;
+	version: number;
+	mode: string;
+	event: string;
+	rgsUrl: string;
+}) => {
+	const data = await rgsFetcher.get({
+		rgsUrl: options.rgsUrl,
+		url: `/bet/replay/${options.game}/${options.version}/${options.mode}/${options.event}`,
+	});
+
+	return data;
+}

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 
-	import { requestAuthenticate } from 'rgs-requests';
-	import { stateUrlDerived, stateBet, stateConfig, stateModal } from 'state-shared';
+	import { requestAuthenticate, requestReplay } from 'rgs-requests';
+	import { stateUrlDerived, stateBet, stateConfig, stateModal, stateUi } from 'state-shared';
 	import { API_AMOUNT_MULTIPLIER, MOST_USED_BET_INDEXES } from 'constants-shared/bet';
 
 	type Props = { children: Snippet };
@@ -106,8 +106,39 @@
 		}
 	};
 
+	const replay = async () => {
+		stateBet.betAmount = (stateUrlDerived.amount() / API_AMOUNT_MULTIPLIER) || 0;
+		stateBet.wageredBetAmount = (stateUrlDerived.amount() / API_AMOUNT_MULTIPLIER) || 0;
+		stateBet.activeBetModeKey = stateUrlDerived.mode();
+
+		const data = await requestReplay({
+			rgsUrl: stateUrlDerived.rgsUrl(),
+			game: stateUrlDerived.game(),
+			mode: stateUrlDerived.mode(),
+			version: stateUrlDerived.version(),
+			event: stateUrlDerived.event(),
+		});
+
+		if(data) {
+			// @ts-ignore
+			stateBet.lastBet = {
+				...data,
+				event: '0',
+				active: true,
+				mode: stateUrlDerived.mode(),
+			};
+		}
+	};
+
 	onMount(async () => {
-		await authenticate();
+		if(stateUrlDerived.replay()) {
+			stateUi.config.mode = 'replay';
+			await replay();
+		} else {
+			stateUi.config.mode = 'default';
+			await authenticate();
+		};
+
 		authenticated = true;
 	});
 </script>

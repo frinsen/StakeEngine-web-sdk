@@ -40,6 +40,8 @@ const handleRequestBet = async ({ onError }: { onError: () => void }) => {
 };
 
 const handleRequestEndRound = async () => {
+	if(stateUrlDerived.replay()) return;
+
 	try {
 		const data = await requestEndRound({
 			sessionID: stateUrlDerived.sessionID(),
