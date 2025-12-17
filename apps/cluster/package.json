@@ -21,7 +21,7 @@
 		"config-lingui": "workspace:*",
 		"config-storybook": "workspace:*",
 		"chromatic": "11.26.1",
-		"@storybook/addon-svelte-csf": "5.0.5",
+		"@storybook/addon-svelte-csf": "5.0.10",
 		"@sveltejs/vite-plugin-svelte": "5.0.3"
 	},
 	"dependencies": {
